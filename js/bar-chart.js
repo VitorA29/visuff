@@ -7,34 +7,24 @@ class BarChart extends BaseChart
         super(id);
     }
 
-    appendData (div)
+    appendData (div, data, i)
     {
-        div.selectAll('rect')
-            .data(this.data)
+        div.selectAll('rect'+i)
+            .data(data)
             .enter().append('rect')
-            .attr('x', d => this.xScale(d.name))
-            .attr('y', d => this.yScale(d.value))
+            .attr('x', d => this.xScale(d.x))
+            .attr('y', d => this.yScale(d.y))
             .attr('width', this.xScale.bandwidth())
-            .attr('height', d => this.height - this.yScale(d.value))
-            .style('fill', 'rgb(150,150,190)');
+            .attr('height', d => this.height - this.yScale(d.y))
+            .style('fill', this.colors[i])
+            .style("opacity", 0.6);
     }
 
     build ()
     {
-        let svg = this.appendSvg();
-        let cht = this.appendChartGroup(svg);
+        this.xScale = d3.scaleBand().domain(this.data.flat().map( d => d.x ));
+        this.yScale = d3.scaleLinear().domain([0, d3.max(this.data.flat(), d => d.y)]);
 
-        this.xScale = d3.scaleBand()
-                        .domain(this.data.map( d => d.name ))
-                        .range([0,this.width]);
-
-        this.yScale = d3.scaleLinear()
-                        .domain([ 0, d3.max(this.data, d => d.value) ])
-                        .nice()
-                        .range([this.height,0]);
-
-        this.createAxes(svg);
-        this.appendData(cht);
-        return this;
+        return this.baseBuild();
     } 
 }

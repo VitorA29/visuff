@@ -12,20 +12,16 @@ myApp.brush02 = [];
 
 myApp.createCirclesData = function(n)
 {
-    let circles = [];
+    let circles1 = [];
+    let circles2 = [];
     
     for(var id=0; id<n; id++)
     {
-        var x = Math.random();
-        var y = Math.random();
-        var r = Math.random()*8+2;
-
-        var c = {'cx': x, 'cy': y, 'r': r};
-        
-        circles.push(c);
+        circles1.push({'x': Math.random(), 'y': Math.random(), 'r': Math.random()*8+2});
+        circles2.push({'x': Math.random(), 'y': Math.random(), 'r': Math.random()*8+2});
     }
     
-    return circles;
+    return [ circles1, circles2 ];
 }
 
 myApp.createBarsData = function(n)
@@ -34,15 +30,15 @@ myApp.createBarsData = function(n)
     
     for(var id=0; id<n; id++)
     {
-        var name = Math.ceil(Math.random()*1000);
-        var value = Math.random();
+        var x = Math.ceil(Math.random()*1000);
+        var y = Math.random();
 
-        var c = {'name': name, 'value': value};
+        var c = {'x': x, 'y': y};
         
         bars.push(c);
     }
-    
-    return bars.sort( (a, b) => a.name - b.name);
+    bars = bars.sort( (a, b) => a.x - b.x);
+    return [ bars, bars.map(b => { return {'x':b.x, 'y':Math.random()} }) ];
 }
 
 myApp.linkedScatterBrush = function(div, selection)

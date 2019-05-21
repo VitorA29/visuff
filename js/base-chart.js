@@ -9,7 +9,7 @@ class BaseChart {
         this.margins = {top: 10, bottom: 30, left: 25, right: 15};
         this.width = 350;
         this.height = 350;
-        this.callback = () => null;
+        this.colors = [ '#FF6C00', '#FFE000', '#13FF00', '#00FFC5', '#00F0FF', '#000CFF', '#C900FF', '#FF00AE' ]
     }
 
     setClass (name)
@@ -30,6 +30,12 @@ class BaseChart {
         return this;
     }
 
+    prepareScale ()
+    {
+        this.xScale.range([0,this.width]);
+        this.yScale.range([this.height,0]);
+    }
+
     appendSvg ()
     {
         let node = d3.select('#'+this.id).append('svg')
@@ -38,12 +44,17 @@ class BaseChart {
         return node;
     }
 
-    appendChartGroup (svg)
+    appendChartGroup (svg, index)
     {
         let chart = svg.append('g')
             .attr('width', this.width)
             .attr('height', this.height)
             .attr('transform', 'translate('+ this.margins.left +','+ this.margins.top +')' );
+
+        if(index != null)
+        {
+            chart.attr('class', 'datum index_'+index);
+        }
 
         return chart;
     }
@@ -55,7 +66,7 @@ class BaseChart {
             .attr('transform', 'translate('+ this.margins.left +','+ (this.height+this.margins.top) +')');
 
         let yAxisGroup = svg.append('g')
-            .attr('class','xAxis')
+            .attr('class','yAxis')
             .attr('transform', 'translate('+ this.margins.left +','+ this.margins.top +')');
 
         this.xAxis = d3.axisBottom(this.xScale);
@@ -67,6 +78,9 @@ class BaseChart {
 
     addBrush (svg)
     {
+        if(!this.callback){
+            return;
+        }
         this.brush = d3.brush()
             .on("start brush", () => {
                 let select = d3.event.selection;
@@ -76,5 +90,19 @@ class BaseChart {
         svg.append("g")
             .attr("class", "brush")
             .call(this.brush);   
+    }
+
+    baseBuild ()
+    {
+        this.prepareScale();
+        let svg = this.appendSvg();
+        this.createAxes(svg);
+        let father = this.appendChartGroup(svg, null);
+        for (let i=0;i<this.data.length;i++){
+            let cht = this.appendChartGroup(svg, i);
+            this.appendData(cht, this.data[i], i);
+        }
+        this.addBrush(father);
+        return this;
     }
 }
