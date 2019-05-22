@@ -21,6 +21,7 @@ class BaseChart {
     setData (data)
     {
         this.data = data;
+        this.multDataQtd = data.length;
         return this;
     }
 
@@ -32,7 +33,7 @@ class BaseChart {
 
     prepareScale ()
     {
-        this.xScale.range([0,this.width]);
+        this.xScale.range([0,this.width]).padding(0.3).align(0.3);
         this.yScale.range([this.height,0]);
     }
 
@@ -44,18 +45,12 @@ class BaseChart {
         return node;
     }
 
-    appendChartGroup (svg, index)
+    appendChartGroup (svg)
     {
         let chart = svg.append('g')
             .attr('width', this.width)
             .attr('height', this.height)
             .attr('transform', 'translate('+ this.margins.left +','+ this.margins.top +')' );
-
-        if(index != null)
-        {
-            chart.attr('class', 'datum index_'+index);
-        }
-
         return chart;
     }
 
@@ -97,12 +92,9 @@ class BaseChart {
         this.prepareScale();
         let svg = this.appendSvg();
         this.createAxes(svg);
-        let father = this.appendChartGroup(svg, null);
-        for (let i=0;i<this.data.length;i++){
-            let cht = this.appendChartGroup(svg, i);
-            this.appendData(cht, this.data[i], i);
-        }
-        this.addBrush(father);
+        let cht = this.appendChartGroup(svg);
+        this.appendData(cht);
+        this.addBrush(cht);
         return this;
     }
 }
