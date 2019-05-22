@@ -10,6 +10,17 @@ class BaseChart {
         this.width = 350;
         this.height = 350;
         this.colors = [ '#FF6C00', '#FFE000', '#13FF00', '#00FFC5', '#00F0FF', '#000CFF', '#C900FF', '#FF00AE' ]
+        this.creation = true;
+    }
+
+    setWidth (val)
+    {
+        this.width = val;
+    }
+
+    setHeight (val)
+    {
+        this.height = val;
     }
 
     setClass (name)
@@ -33,7 +44,7 @@ class BaseChart {
 
     prepareScale ()
     {
-        this.xScale.range([0,this.width]).padding(0.3).align(0.3);
+        this.xScale.range([0,this.width]);
         this.yScale.range([this.height,0]);
     }
 
@@ -92,9 +103,8 @@ class BaseChart {
         this.prepareScale();
         let svg = this.appendSvg();
         this.createAxes(svg);
-        let cht = this.appendChartGroup(svg);
-        this.appendData(cht);
-        this.addBrush(cht);
+        this.appendData(svg);
+        this.creation = false
         return this;
     }
 }

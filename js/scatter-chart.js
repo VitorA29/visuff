@@ -7,16 +7,25 @@ class ScatterChart extends BaseChart
         super(id);
     }
 
-    appendData (div, data, i)
+    appendData (svg)
     {
-        div.selectAll('circle'+i)
-            .data(data)
+        let cht = this.appendChartGroup(svg)
+        let group = cht.selectAll('.datum')
+            .data(this.data)
+            .enter()
+            .append('g')
+            .attr('class', 'datum');
+
+        group.selectAll('circle')
+            .data((d, i) => d.map( (b) => {b.groupIndex=i;return b;} ) )
             .enter()
             .append('circle')
             .attr('cx', d => this.xScale(d.x))
             .attr('cy', d => this.yScale(d.y))
             .attr('r' , d => d.r)
-            .style('fill', this.colors[i]);
+            .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
+
+        this.addBrush(cht);
     }
 
     updateBrush (selection, currBrush)
@@ -50,15 +59,13 @@ class ScatterChart extends BaseChart
 
     highlight (currBrush, crosBrush, currColor, crossColor)
     {
-        for (let index=0;index<2;index++){
-            let cht = d3.select('#'+this.id).select('svg').select('.index_'+index);
-            cht.selectAll('circle').style("fill", (d, i) => {
-                if(currBrush.indexOf(i) >= 0 && crosBrush.indexOf(i) >= 0) return "#fecdca";
-                else if(currBrush.indexOf(i) >= 0) return currColor;
-                else if(crosBrush.indexOf(i) >= 0) return crossColor
-                else return this.colors[index];
-            });
-        }
+        let cht = d3.select('#'+this.id).select('svg');
+        cht.selectAll('circle').style("fill", (d, i) => {
+            if(currBrush.indexOf(i) >= 0 && crosBrush.indexOf(i) >= 0) return "#0000FF";
+            else if(currBrush.indexOf(i) >= 0) return currColor;
+            else if(crosBrush.indexOf(i) >= 0) return crossColor
+            else return this.colors[d.groupIndex];
+        });
     }
 
     build ()
