@@ -7,32 +7,32 @@ class LineChart extends BaseChart
         super(id);
     }
 
-    appendData (svg)
+    appendData (cht)
     {
-        for (let i=0;i<this.multDataQtd;i++){
-            let cht = this.appendChartGroup(svg).attr('class', 'datum index_'+i)
+        let line = d3.line()
+            .x(d =>this.xScale(d.x))
+            .y(d => this.yScale(d.y));
 
-            let line = d3.line()
-                    .x(d => this.xScale(d.x))
-                    .y(d => this.yScale(d.y));
+        cht.selectAll('.datum')
+            .data(this.data)
+            .enter()
+            .append('g')
+            .attr('class', 'datum')
+            .append('path')
+            .attr('fill', 'none')
+            .attr('stroke', (d, i) => this.colors[i])
+            .attr('stroke-width', '3')
+            .attr('class', 'path')
+            .attr('d', line);
 
-            cht.append('path')
-                .datum( this.data[i] )
-                .attr('fill', 'none')
-                .attr('stroke', this.colors[i])
-                .attr('stroke-width', '3')
-                .attr('d', line);
-    
-            let dots = cht.selectAll('.circle'+i).data(this.data[i]);
-
-            dots.enter()
-                .append('circle')
-                .attr('class', 'circle'+i)
-                .attr('cx', d => this.xScale(d.x))
-                .attr('cy', d => this.yScale(d.y))
-                .attr('r', 3)
-                .style('fill', this.creation ? this.colors[i] : '#000000');
-        }
+        cht.selectAll('.datum').selectAll('circle')
+            .data((d, i) => d.map( b => {b.groupIndex=i;return b;} ) )
+            .enter()
+            .append('circle')
+            .attr('cx', d => this.xScale(d.x))
+            .attr('cy', d => this.yScale(d.y))
+            .attr('r' , 3)
+            .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
     }
 
     build ()

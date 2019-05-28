@@ -31,7 +31,8 @@ class BaseChart {
 
     setData (data)
     {
-        this.data = data;
+        this.data = data.map(d => d.values);
+        this.legend = data.map(d => d.name);
         this.multDataQtd = data.length;
         return this;
     }
@@ -97,14 +98,30 @@ class BaseChart {
             .attr("class", "brush")
             .call(this.brush);   
     }
+    
+    appendLegend (cht)
+    {
+        cht.selectAll('text')
+            .data(this.legend)
+            .enter()
+            .append('text')
+            .attr('x', this.width - 52)
+            .attr('y', (d, i) => i * 20 + 9)
+            .attr('style', (d,i) => 'z-index:10;fill:'+this.colors[i]+';')
+            .text( d => d);
+    }
 
     baseBuild ()
     {
         this.prepareScale();
         let svg = this.appendSvg();
         this.createAxes(svg);
-        this.appendData(svg);
-        this.creation = false
+
+        let cht = this.appendChartGroup(svg);
+        this.appendData(cht);
+        this.appendLegend(cht);
+        this.addBrush(cht);
+        this.creation = false;
         return this;
     }
 }

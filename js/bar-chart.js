@@ -7,9 +7,8 @@ class BarChart extends BaseChart
         super(id);
     }
 
-    appendData (svg)
+    appendData (cht)
     {
-        let cht = this.appendChartGroup(svg)
         let group = cht.selectAll('.datum')
             .data(this.data)
             .enter()
@@ -17,7 +16,7 @@ class BarChart extends BaseChart
             .attr('class', 'datum');
 
         group.selectAll('rect')
-            .data( (d, i) => d.map( (b) => {b.groupIndex=i;return b;} ))
+            .data( (d, i) => d.map( b => {b.groupIndex=i;return b;} ))
             .enter()
             .append('rect')
             .attr('x', d => this.xScale(d.x) + this.xScale.bandwidth() / this.multDataQtd * (1 + d.groupIndex - Math.floor(this.multDataQtd/2)))

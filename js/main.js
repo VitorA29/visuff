@@ -17,7 +17,7 @@ myApp.createCirclesData = function(n, i)
         let circles = [];
         for(var k=0; k<n; k++)
             circles.push( { 'x': Math.random(), 'y': Math.random(), 'r': Math.random()*8+2 } );
-        resultCircles.push(circles);
+        resultCircles.push( { 'name':String(j), 'values':circles } );
     }
     return resultCircles;
 }
@@ -28,9 +28,9 @@ myApp.createBarsData = function(n, i)
     for(var j=0; j<n; j++)
         bars.push( { 'x': Math.ceil(Math.random()*1000), 'y': Math.random() } );
     bars = bars.sort( (a, b) => a.x - b.x)
-    let resultBars = [ bars ];
+    let resultBars = [ { 'name':'0', 'values':bars } ];
     for(var j=1; j<i; j++)
-        resultBars.push( bars.map( b => { return { 'x': b.x, 'y': Math.random() } } ) );
+        resultBars.push( { 'name':String(j), 'values':bars.map( b => { return { 'x': b.x, 'y': Math.random() } } ) } );
     return resultBars;
 }
 
@@ -41,7 +41,7 @@ myApp.createLinesData = function(n, i)
         let dots = [];
         for(var k=0; k<n; k++)
             dots.push( { 'x': Math.ceil(Math.random()*1000), 'y': Math.random() } );
-        resultDots.push(dots.sort( (a,b) => a.x-b.x ));
+        resultDots.push( { 'name':String(j), 'values':dots.sort( (a,b) => a.x-b.x ) } );
     }
     return resultDots;
 }
@@ -66,7 +66,9 @@ myApp.run = function()
     myApp.chart01 = new ScatterChart('chart01').setData(myApp.circlesData).setCallback(myApp.linkedScatterBrush).build();
     myApp.chart02 = new ScatterChart('chart02').setData(myApp.circlesData).setCallback(myApp.linkedScatterBrush).build();
     myApp.chart03 = new BarChart('chart03').setData(myApp.barsData).build();
-    myApp.chart04 = new LineChart('chart04').setData(myApp.linesData).build();
+    myApp.chart04 = new BarChart('chart04').setData(myApp.barsData).build();
+    myApp.chart05 = new LineChart('chart05').setData(myApp.linesData).build();
+    myApp.chart06 = new LineChart('chart06').setData(myApp.linesData).build();
 }
 
 window.onload = myApp.run;

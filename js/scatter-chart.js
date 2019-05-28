@@ -7,9 +7,8 @@ class ScatterChart extends BaseChart
         super(id);
     }
 
-    appendData (svg)
+    appendData (cht)
     {
-        let cht = this.appendChartGroup(svg)
         let group = cht.selectAll('.datum')
             .data(this.data)
             .enter()
@@ -17,15 +16,13 @@ class ScatterChart extends BaseChart
             .attr('class', 'datum');
 
         group.selectAll('circle')
-            .data((d, i) => d.map( (b) => {b.groupIndex=i;return b;} ) )
+            .data((d, i) => d.map( b => {b.groupIndex=i;return b;} ) )
             .enter()
             .append('circle')
             .attr('cx', d => this.xScale(d.x))
             .attr('cy', d => this.yScale(d.y))
             .attr('r' , d => d.r)
             .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
-
-        this.addBrush(cht);
     }
 
     updateBrush (selection, currBrush)
