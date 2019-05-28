@@ -9,7 +9,6 @@ class BaseChart {
         this.margins = {top: 10, bottom: 30, left: 25, right: 15};
         this.width = 350;
         this.height = 350;
-        this.colors = [ '#FF6C00', '#FFE000', '#13FF00', '#00FFC5', '#00F0FF', '#000CFF', '#C900FF', '#FF00AE' ]
         this.creation = true;
     }
 
@@ -33,6 +32,7 @@ class BaseChart {
     {
         this.data = data.map(d => d.values);
         this.legend = data.map(d => d.name);
+        this.colors = data.map(d => d.color);
         this.multDataQtd = data.length;
         return this;
     }

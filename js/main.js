@@ -16,6 +16,8 @@ myApp.brush04 = [];
 myApp.brush05 = [];
 myApp.brush06 = [];
 
+let colors = [ '#FF6C00', '#FFE000', '#13FF00', '#00FFC5', '#00F0FF', '#000CFF', '#C900FF', '#FF00AE' ];
+
 myApp.createCirclesData = function(n, i)
 {
     let resultCircles = [];
@@ -23,7 +25,7 @@ myApp.createCirclesData = function(n, i)
         let circles = [];
         for(var k=0; k<n; k++)
             circles.push( { 'x': Math.random(), 'y': Math.random(), 'r': Math.random()*8+2 } );
-        resultCircles.push( { 'name':String(j), 'values':circles } );
+        resultCircles.push( { 'name':String(j), 'values':circles, 'color': colors[j] } );
     }
     return resultCircles;
 }
@@ -34,9 +36,9 @@ myApp.createBarsData = function(n, i)
     for(var j=0; j<n; j++)
         bars.push( { 'x': Math.ceil(Math.random()*1000), 'y': Math.random() } );
     bars = bars.sort( (a, b) => a.x - b.x)
-    let resultBars = [ { 'name':'0', 'values':bars } ];
+    let resultBars = [ { 'name':'0', 'values':bars, 'color': colors[0] } ];
     for(var j=1; j<i; j++)
-        resultBars.push( { 'name':String(j), 'values':bars.map( b => { return { 'x': b.x, 'y': Math.random() } } ) } );
+        resultBars.push( { 'name':String(j), 'values':bars.map( b => { return { 'x': b.x, 'y': Math.random() } } ), 'color': colors[j] } );
     return resultBars;
 }
 
@@ -47,7 +49,7 @@ myApp.createLinesData = function(n, i)
         let dots = [];
         for(var k=0; k<n; k++)
             dots.push( { 'x': Math.ceil(Math.random()*1000), 'y': Math.random() } );
-        resultDots.push( { 'name':String(j), 'values':dots.sort( (a,b) => a.x-b.x ) } );
+        resultDots.push( { 'name':String(j), 'values':dots.sort( (a,b) => a.x-b.x ), 'color': colors[j] } );
     }
     return resultDots;
 }
