@@ -22,47 +22,8 @@ class ScatterChart extends BaseChart
             .attr('cx', d => this.xScale(d.x))
             .attr('cy', d => this.yScale(d.y))
             .attr('r' , d => d.r)
+            .attr('class', 'data-element')
             .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
-    }
-
-    updateBrush (selection, currBrush)
-    {
-        let s = selection,
-           x0 = s[0][0],
-           y0 = s[0][1],
-           x1 = s[1][0],
-           y1 = s[1][1];
-
-    
-        let svg = d3.select('#'+this.id)
-                    .select('svg');
-
-        svg.selectAll('circle')
-            .each((d,i) =>
-            {
-                let pos = currBrush.indexOf(i);
-            
-                if (this.xScale(d.x) >= x0 && this.xScale(d.x) <= x1 &&
-                    this.yScale(d.y) >= y0 && this.yScale(d.y) <= y1)
-                { 
-                    if(pos === -1) currBrush.push(i);
-                }
-                else
-                {
-                    if(pos  >=  0) currBrush.splice(pos, 1);
-                }
-            });
-    }
-
-    highlight (currBrush, crosBrush, currColor, crossColor)
-    {
-        let cht = d3.select('#'+this.id).select('svg');
-        cht.selectAll('circle').style("fill", (d, i) => {
-            if(currBrush.indexOf(i) >= 0 && crosBrush.indexOf(i) >= 0) return "#0000FF";
-            else if(currBrush.indexOf(i) >= 0) return currColor;
-            else if(crosBrush.indexOf(i) >= 0) return crossColor
-            else return this.colors[d.groupIndex];
-        });
     }
 
     build ()

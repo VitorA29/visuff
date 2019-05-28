@@ -10,6 +10,12 @@ myApp.chart02 = undefined;
 myApp.brush01 = [];
 myApp.brush02 = [];
 
+myApp.brush03 = [];
+myApp.brush04 = [];
+
+myApp.brush05 = [];
+myApp.brush06 = [];
+
 myApp.createCirclesData = function(n, i)
 {
     let resultCircles = [];
@@ -57,6 +63,28 @@ myApp.linkedScatterBrush = function(div, selection)
     myApp.chart02.highlight(myApp.brush02, myApp.brush01, "#696969", "#FF00FF");
 }
 
+myApp.linkedBarBrush = function(div, selection)
+{    
+    if(div === "#chart03")
+        myApp.chart03.updateBrush(selection, myApp.brush03);
+    else
+        myApp.chart04.updateBrush(selection, myApp.brush04);
+
+    myApp.chart03.highlight(myApp.brush03, myApp.brush04, "#696969", "#FF00FF");
+    myApp.chart04.highlight(myApp.brush04, myApp.brush03, "#696969", "#FF00FF");
+}
+
+myApp.linkedLineBrush = function(div, selection)
+{    
+    if(div === "#chart05")
+        myApp.chart05.updateBrush(selection, myApp.brush05);
+    else
+        myApp.chart06.updateBrush(selection, myApp.brush06);
+
+    myApp.chart05.highlight(myApp.brush05, myApp.brush06, "#696969", "#FF00FF");
+    myApp.chart06.highlight(myApp.brush06, myApp.brush05, "#696969", "#FF00FF");
+}
+
 myApp.run = function()
 {
     myApp.circlesData = myApp.createCirclesData(100, 4);
@@ -65,10 +93,10 @@ myApp.run = function()
     
     myApp.chart01 = new ScatterChart('chart01').setData(myApp.circlesData).setCallback(myApp.linkedScatterBrush).build();
     myApp.chart02 = new ScatterChart('chart02').setData(myApp.circlesData).setCallback(myApp.linkedScatterBrush).build();
-    myApp.chart03 = new BarChart('chart03').setData(myApp.barsData).build();
-    myApp.chart04 = new BarChart('chart04').setData(myApp.barsData).build();
-    myApp.chart05 = new LineChart('chart05').setData(myApp.linesData).build();
-    myApp.chart06 = new LineChart('chart06').setData(myApp.linesData).build();
+    myApp.chart03 = new BarChart('chart03').setData(myApp.barsData).setCallback(myApp.linkedBarBrush).build();
+    myApp.chart04 = new BarChart('chart04').setData(myApp.barsData).setCallback(myApp.linkedBarBrush).build();
+    myApp.chart05 = new LineChart('chart05').setData(myApp.linesData).setCallback(myApp.linkedLineBrush).build();
+    myApp.chart06 = new LineChart('chart06').setData(myApp.linesData).setCallback(myApp.linkedLineBrush).build();
 }
 
 window.onload = myApp.run;

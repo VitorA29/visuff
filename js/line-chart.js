@@ -13,25 +13,27 @@ class LineChart extends BaseChart
             .x(d =>this.xScale(d.x))
             .y(d => this.yScale(d.y));
 
-        cht.selectAll('.datum')
+        let group = cht.selectAll('.datum')
             .data(this.data)
             .enter()
             .append('g')
-            .attr('class', 'datum')
-            .append('path')
+            .attr('class', 'datum');
+
+        group.append('path')
             .attr('fill', 'none')
             .attr('stroke', (d, i) => this.colors[i])
             .attr('stroke-width', '3')
             .attr('class', 'path')
             .attr('d', line);
 
-        cht.selectAll('.datum').selectAll('circle')
+        group.selectAll('circle')
             .data((d, i) => d.map( b => {b.groupIndex=i;return b;} ) )
             .enter()
             .append('circle')
             .attr('cx', d => this.xScale(d.x))
             .attr('cy', d => this.yScale(d.y))
             .attr('r' , 3)
+            .attr('class', 'data-element')
             .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
     }
 

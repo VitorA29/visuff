@@ -23,7 +23,7 @@ class BarChart extends BaseChart
             .attr('width', this.xScale.bandwidth()/this.multDataQtd)
             .attr('y', d => this.yScale(d.y))
             .attr('height', d => this.height - this.yScale(d.y))
-            .attr('class', 'bar')
+            .attr('class', 'data-element')
             .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
     }
 
