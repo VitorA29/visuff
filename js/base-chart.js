@@ -171,20 +171,36 @@ class BaseChart {
 
     addZoom (svg)
     {
-        return;
-        let zoomed = () => 
+        let resetZoom = () =>
         {
-            var t = d3.event.transform;
-            
-            var xScale = t.rescaleX(this.xScale);
-            this.xAxis.scale(xScale);
-                    
-            var xAxisGroup = svg.select('.xAxis');
+            this.xScale = this.xScaleDefault;
+            this.xAxis.scale(this.xScaleDefault);
+
+            let xAxisGroup = svg.select('.xAxis');
             xAxisGroup.call(this.xAxis);
 
-            svg.select('.datum')
-                .selectAll('.data-element')
-                .attr("cx", d => xScale(d.x));
+            this.repositionXValues();
+            
+            d3.select('.zoom')
+            .call(zoom.transform, d3.zoomIdentity);
+        }
+
+        d3.select('#'+this.id)
+        .append('button')
+        .on('click', resetZoom)
+        .text("reset");
+
+        let zoomed = () => 
+        {
+            let transform = d3.event.transform;
+            
+            this.xScale = transform.rescaleX(this.xScaleDefault);
+            this.xAxis.scale(this.xScale);
+                    
+            let xAxisGroup = svg.select('.xAxis');
+            xAxisGroup.call(this.xAxis);
+
+            this.repositionXValues();
         }
         
         this.zoom = d3.zoom()
@@ -195,6 +211,7 @@ class BaseChart {
             .attr("width", this.width)
             .attr("height", this.margins.bottom)
             .attr('transform', 'translate('+ this.margins.left +','+ (this.height+this.margins.top) +')')
+            .attr('style', 'fill: none;pointer-events: all;z-index: 1000;')
             .call(this.zoom);
     }
 
@@ -208,10 +225,11 @@ class BaseChart {
 
     baseBuild ()
     {
+        this.xScale = this.xScaleDefault;
         this.prepareScale();
         let svg = this.appendSvg();
         this.createAxes(svg);
-
+        
         this.chart = this.appendChartGroup(svg);
         this.addBrush();
         this.addZoom(svg);

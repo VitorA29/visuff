@@ -26,9 +26,16 @@ class ScatterChart extends BaseChart
             .style('fill', d => this.creation ? this.colors[d.groupIndex] : '#000000');
     }
 
+    repositionXValues ()
+    {
+        this.chart.selectAll('.datum')
+            .selectAll('.data-element')
+            .attr('cx', d => this.xScale(d.x));
+    }
+
     build ()
     {
-        this.xScale = d3.scaleLinear().domain([d3.min(this.data.flat(), d => d.x), d3.max(this.data.flat(), d => d.x)]);
+        this.xScaleDefault = d3.scaleLinear().domain([d3.min(this.data.flat(), d => d.x), d3.max(this.data.flat(), d => d.x)]);
         this.yScale = d3.scaleLinear().domain([d3.min(this.data.flat(), d => d.y), d3.max(this.data.flat(), d => d.y)]);
         return this.baseBuild();
     } 
