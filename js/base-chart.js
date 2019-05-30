@@ -9,7 +9,7 @@ class BaseChart {
         this.margins = {top: 10, bottom: 30, left: 25, right: 15};
         this.width = 350;
         this.height = 350;
-        this.creation = true;
+        this.fontSize = 10;
     }
 
     setWidth (val)
@@ -43,6 +43,12 @@ class BaseChart {
         return this;
     }
 
+    setFontSize (val)
+    {
+        this.fontSize = val;
+        return this;
+    }
+
     prepareScale ()
     {
         this.xScale.range([0,this.width]);
@@ -53,6 +59,9 @@ class BaseChart {
     {
         let node = d3.select('#'+this.id).append('svg')
             .attr('width', this.width + this.margins.left + this.margins.right)
+            .attr('height', this.height + this.margins.top + this.margins.bottom);
+        this.legendSvg = d3.select('#'+this.id).append('svg')
+            .attr('width', (this.fontSize/2)*10 + this.margins.right)
             .attr('height', this.height + this.margins.top + this.margins.bottom);
         return node;
     }
@@ -83,7 +92,7 @@ class BaseChart {
         yAxisGroup.call(this.yAxis);
     }
 
-    addBrush (svg)
+    addBrush ()
     {
         if(!this.callback){
             return;
@@ -94,21 +103,31 @@ class BaseChart {
                 this.callback('#'+this.id, select);
             });
 
-        svg.append("g")
+        this.chart.append("g")
             .attr("class", "brush")
-            .call(this.brush);   
+            .call(this.brush);
     }
     
-    appendLegend (cht)
+    appendLegend ()
     {
-        cht.selectAll('text')
+        let radius = this.fontSize/2
+        this.legendSvg.selectAll('circle')
+            .data(this.legend)
+            .enter()
+            .append('circle')
+            .attr('cx', radius + this.margins.left)
+            .attr('cy', (d, i) => this.margins.top + (radius + this.margins.top)*i - radius/2)
+            .attr('r', radius)
+            .style('fill', (d,i) => this.colors[i]);
+            
+        this.legendSvg.selectAll('text')
             .data(this.legend)
             .enter()
             .append('text')
-            .attr('x', this.width - 52)
-            .attr('y', (d, i) => i * 20 + 9)
-            .attr('style', (d,i) => 'z-index:10;fill:'+this.colors[i]+';')
-            .text( d => d);
+            .attr('x', radius + this.margins.left + this.margins.right)
+            .attr('y', (d, i) => this.margins.top + (radius + this.margins.top)*i )
+            .attr('style', 'font-size:'+ this.fontSize + ';')
+            .text( d => d );
     }
 
     updateBrush (selection, currBrush)
@@ -139,15 +158,52 @@ class BaseChart {
             });
     }
 
-    highlight (currBrush, crosBrush, currColor, crossColor)
+    highlight (currBrush, crosBrush, currColor, crossColor, interColor)
     {
         let cht = d3.select('#'+this.id).select('svg');
         cht.selectAll('.data-element').style("fill", (d, i) => {
-            if(currBrush.indexOf(i) >= 0 && crosBrush.indexOf(i) >= 0) return "#0000FF";
+            if(currBrush.indexOf(i) >= 0 && crosBrush.indexOf(i) >= 0) return interColor;
             else if(currBrush.indexOf(i) >= 0) return currColor;
             else if(crosBrush.indexOf(i) >= 0) return crossColor
             else return this.colors[d.groupIndex];
         });
+    }
+
+    addZoom (svg)
+    {
+        return;
+        let zoomed = () => 
+        {
+            var t = d3.event.transform;
+            
+            var xScale = t.rescaleX(this.xScale);
+            this.xAxis.scale(xScale);
+                    
+            var xAxisGroup = svg.select('.xAxis');
+            xAxisGroup.call(this.xAxis);
+
+            svg.select('.datum')
+                .selectAll('.data-element')
+                .attr("cx", d => xScale(d.x));
+        }
+        
+        this.zoom = d3.zoom()
+            .on("zoom", zoomed);
+
+        svg.append("rect")
+            .attr("class", "zoom")
+            .attr("width", this.width)
+            .attr("height", this.margins.bottom)
+            .attr('transform', 'translate('+ this.margins.left +','+ (this.height+this.margins.top) +')')
+            .call(this.zoom);
+    }
+
+    populateData ()
+    {
+        this.appendData()
+        this.appendLegend();
+        this.creation = false;
+        return this;
     }
 
     baseBuild ()
@@ -156,11 +212,10 @@ class BaseChart {
         let svg = this.appendSvg();
         this.createAxes(svg);
 
-        let cht = this.appendChartGroup(svg);
-        this.appendData(cht);
-        this.appendLegend(cht);
-        this.addBrush(cht);
-        this.creation = false;
+        this.chart = this.appendChartGroup(svg);
+        this.addBrush();
+        this.addZoom(svg);
+        this.creation = true;
         return this;
     }
 }

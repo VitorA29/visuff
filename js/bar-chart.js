@@ -7,16 +7,16 @@ class BarChart extends BaseChart
         super(id);
     }
 
-    appendData (cht)
+    appendData ()
     {
-        let group = cht.selectAll('.datum')
+        let group = this.chart.selectAll('.datum')
             .data(this.data)
             .enter()
             .append('g')
             .attr('class', 'datum');
 
         group.selectAll('rect')
-            .data( (d, i) => d.map( b => {b.groupIndex=i;return b;} ))
+            .data( (d, i) => d.map( b => {b.groupIndex=(i % this.colors.length);return b;} ))
             .enter()
             .append('rect')
             .attr('x', d => this.xScale(d.x) + this.xScale.bandwidth() / this.multDataQtd * (1 + d.groupIndex - Math.floor(this.multDataQtd/2)))

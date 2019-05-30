@@ -7,13 +7,13 @@ class LineChart extends BaseChart
         super(id);
     }
 
-    appendData (cht)
+    appendData ()
     {
         let line = d3.line()
             .x(d =>this.xScale(d.x))
             .y(d => this.yScale(d.y));
 
-        let group = cht.selectAll('.datum')
+        let group = this.chart.selectAll('.datum')
             .data(this.data)
             .enter()
             .append('g')
@@ -27,7 +27,7 @@ class LineChart extends BaseChart
             .attr('d', line);
 
         group.selectAll('circle')
-            .data((d, i) => d.map( b => {b.groupIndex=i;return b;} ) )
+            .data((d, i) => d.map( b => {b.groupIndex=(i % this.colors.length);return b;} ) )
             .enter()
             .append('circle')
             .attr('cx', d => this.xScale(d.x))
