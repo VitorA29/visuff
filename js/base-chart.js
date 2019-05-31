@@ -182,7 +182,7 @@ class BaseChart {
             this.repositionXValues();
             
             d3.select('.zoom')
-            .call(zoom.transform, d3.zoomIdentity);
+            .call(this.zoom.transform, d3.zoomIdentity);
         }
 
         d3.select('#'+this.id)

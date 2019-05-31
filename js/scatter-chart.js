@@ -16,7 +16,7 @@ class ScatterChart extends BaseChart
             .attr('class', 'datum');
 
         group.selectAll('circle')
-            .data((d, i) => d.map( b => {b.groupIndex=(i % this.colors.length);return b;} ) )
+            .data((d, i) => d.map( b => {b.groupIndex=i;return b;} ) )
             .enter()
             .append('circle')
             .attr('cx', d => this.xScale(d.x))
