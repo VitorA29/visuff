@@ -95,10 +95,10 @@ myApp.run = function()
     
     myApp.chart01 = new ScatterChart('chart01').setData(myApp.circlesData).setCallback(myApp.linkedScatterBrush).build().populateData();
     myApp.chart02 = new ScatterChart('chart02').setData(myApp.circlesData).setCallback(myApp.linkedScatterBrush).build().populateData();
-    myApp.chart03 = new BarChart('chart03').setData(myApp.barsData).setCallback(myApp.linkedBarBrush).build().populateData();
-    myApp.chart04 = new BarChart('chart04').setData(myApp.barsData).setCallback(myApp.linkedBarBrush).build().populateData();
     myApp.chart05 = new LineChart('chart05').setData(myApp.linesData).setCallback(myApp.linkedLineBrush).build().populateData();
     myApp.chart06 = new LineChart('chart06').setData(myApp.linesData).setCallback(myApp.linkedLineBrush).build().populateData();
+    myApp.chart03 = new BarChart('chart03').setData(myApp.barsData).setCallback(myApp.linkedBarBrush).build().populateData();
+    myApp.chart04 = new BarChart('chart04').setData(myApp.barsData).setCallback(myApp.linkedBarBrush).build().populateData();
 }
 
 window.onload = myApp.run;
